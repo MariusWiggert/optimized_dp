@@ -55,7 +55,8 @@ class Air3D:
         in4 = hcl.scalar(0, "in4")
 
         # determinand for sign of control
-        det = spat_deriv[0]*state[1] - spat_deriv[1]*state[0] - spat_deriv[2]
+        det = hcl.scalar(0, "det")
+        det[0] = spat_deriv[0]*state[1] - spat_deriv[1]*state[0] - spat_deriv[2]
 
         if self.uMode == "min":
             with hcl.if_(det >= 0):
