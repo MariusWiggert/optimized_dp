@@ -8,7 +8,7 @@ Details about Air3D can be found in Ian Mitchells PhD Thesis Section 3.1
  """
 class Air3D:
     def __init__(self, plane_speeds, x=[0,0,0], uMin = -1, uMax = 1, dMin = -1,
-                 dMax=[1], uMode="min", dMode="max"):
+                 dMax=1, uMode="min", dMode="max"):
         """Creates an Air3D with the following states:
            X position, Y position, relative heading
            The user control is turn_rate, the disturbance is the turn_rate of the other airplane
