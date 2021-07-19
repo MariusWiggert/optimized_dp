@@ -7,7 +7,7 @@ Details about Air3D can be found in Ian Mitchells PhD Thesis Section 3.1
  theta_dot = b-a
  """
 class Air3D:
-    def __init__(self, plane_speeds, x=[0,0,0], uMin = [-1], uMax = [1], dMin = [-1],
+    def __init__(self, plane_speeds, x=[0,0,0], uMin = -1, uMax = 1, dMin = -1,
                  dMax=[1], uMode="min", dMode="max"):
         """Creates an Air3D with the following states:
            X position, Y position, relative heading
@@ -60,18 +60,18 @@ class Air3D:
 
         if self.uMode == "min":
             with hcl.if_(det >= 0):
-                opt_ctrl[0] = self.uMin[0]
+                opt_ctrl[0] = self.uMin
             with hcl.elif_(det < 0):
-                opt_ctrl[0] = self.uMax[0]
+                opt_ctrl[0] = self.uMax
         else:
             with hcl.if_(det >= 0):
-                opt_ctrl[0] = self.uMax[0]
+                opt_ctrl[0] = self.uMax
             with hcl.elif_(det < 0):
-                opt_ctrl[0] = self.uMin[0]
+                opt_ctrl[0] = self.uMin
 
         return (opt_ctrl[0], in3[0], in4[0])
 
-    def optDstb(self, spat_deriv):
+    def optDstb(self, t, state, spat_deriv):
         """
         :param spat_deriv: tuple of spatial derivative in all dimensions
         :return: a tuple of optimal disturbances
@@ -84,14 +84,14 @@ class Air3D:
 
         if self.uMode == "min":
             with hcl.if_(spat_deriv[2] >= 0):
-                opt_dist[0] = self.dMin[0]
+                opt_dist[0] = self.dMin
             with hcl.elif_(spat_deriv[2] < 0):
-                opt_dist[0] = self.dMax[0]
+                opt_dist[0] = self.dMax
         else:
             with hcl.if_(spat_deriv[2] >= 0):
-                opt_dist[0] = self.dMax[0]
+                opt_dist[0] = self.dMax
             with hcl.elif_(spat_deriv[2] < 0):
-                opt_dist[0] = self.dMin[0]
+                opt_dist[0] = self.dMin
 
         return (opt_dist[0], in3[0], in4[0])
 
@@ -103,8 +103,8 @@ class Air3D:
         y_dot = hcl.scalar(0, "y_dot")
         theta_dot = hcl.scalar(0, "theta_dot")
 
-        x_dot[0] = -self.plane_speeds + self.plane_speeds * hcl.cos(state[2]) + uOpt*state[1]
-        y_dot[0] = self.plane_speeds * hcl.sin(state[2]) - uOpt*state[0]
-        theta_dot[0] = dOpt - uOpt
+        x_dot[0] = -self.plane_speeds + self.plane_speeds * hcl.cos(state[2]) + uOpt[0]*state[1]
+        y_dot[0] = self.plane_speeds * hcl.sin(state[2]) - uOpt[0]*state[0]
+        theta_dot[0] = dOpt[0] - uOpt[0]
 
         return (x_dot[0], y_dot[0] ,theta_dot[0])
